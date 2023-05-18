@@ -1,5 +1,5 @@
 ﻿//var applicationServerPublicKey = '';
-var serviceWorker = '/sw.js';
+var serviceWorker = '~/sw.js';
 var isSubscribed = false;
 
 $(document).ready(function () {
@@ -23,18 +23,25 @@ $(document).ready(function () {
 
 function initialiseServiceWorker() {
     if ('serviceWorker' in navigator) {
+        alert("Inside initialiseServiceWorker: " + navigator);
         navigator.serviceWorker.register(serviceWorker).then(handleSWRegistration);
+        alert("After initialiseServiceWorker: " + navigator);
     } else {
+        alert("[initialiseServiceWorker] Service workers are not supported in this browser. " + navigator);
         errorHandler('[initialiseServiceWorker] Service workers are not supported in this browser.');
     }
 };
 
 function handleSWRegistration(reg) {
+    alert("Inside handleSWRegistration: " + reg);
     if (reg.installing) {
+        alert("Service worker installing: " + reg);
         console.log('Service worker installing');
     } else if (reg.waiting) {
+        alert("Service worker installed: " + reg);
         console.log('Service worker installed');
     } else if (reg.active) {
+        alert("Service worker active: " + reg);
         console.log('Service worker active');
     }
 
@@ -74,7 +81,9 @@ function initialiseState(reg) {
 }
 
 function subscribe() {
+    alert("Entry");
     navigator.serviceWorker.ready.then(function (reg) {
+        alert("Beginning of Function");
         var subscribeParams = { userVisibleOnly: true };
 
         //Setting the public key of our VAPID key pair.
@@ -88,11 +97,17 @@ function subscribe() {
                 var p256dh = base64Encode(subscription.getKey('p256dh'));
                 var auth = base64Encode(subscription.getKey('auth'));
 
-                console.log(subscription);
-
                 $('#PushEndpoint').val(subscription.endpoint);
                 $('#PushP256DH').val(p256dh);
                 $('#PushAuth').val(auth);
+                alert("Getting into");
+
+                alert("endpoint" + subscription.endpoint);
+                alert("Getting into p256dh");
+                alert("p256dh" + p256dh);
+                alert("Getting into auth");
+                alert("auth" + auth);
+
             })
             .catch(function (e) {
                 errorHandler('[subscribe] Unable to subscribe to push', e);

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PackageTrackingClient;
+using System.Text;
 using WebPush;
 using WebPushApplication.Data;
 using WebPushApplication.Models;
@@ -26,9 +28,23 @@ namespace WebPushApplication.Controllers
 		}
 		public IActionResult Create()
 		{
-			ViewBag.PublicKey = _configuration.GetSection("VapidKeys")["PublicKey"];
+            StringBuilder logString = new StringBuilder();
+            try
+			{
+				ViewBag.PublicKey = _configuration.GetSection("VapidKeys")["PublicKey"];
+                logString.Append(_configuration.GetSection("VapidKeys")["PublicKey"] + Environment.NewLine);
+                logString.Append(_configuration.GetSection("VapidKeys")["PrivateKey"] + Environment.NewLine);
+               // LogWriter.WriteLog(logString.ToString());
 
-			return View();
+                return View();
+			}
+
+			catch(Exception ex)
+			{
+                logString.Append(ex.Message + Environment.NewLine);
+                LogWriter.WriteLog(logString.ToString());
+                return View();
+			}
 		}
 
 		[HttpPost]
